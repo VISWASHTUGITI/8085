@@ -333,4 +333,55 @@ This is exactly like a subroutine needing an explicit `RET`/`JMP` — nothing ha
 
 ---
 
+## 16. Hardwired vs Microprogrammed Control — Advantages & Disadvantages
+
+### Quick Comparison Table
+
+| Aspect | Hardwired Control | Microprogrammed Control |
+|---|---|---|
+| **Implementation** | Fixed logic circuits (combinational logic, PLA, flip-flops) | Control signals stored as microinstructions in Control Memory (ROM/RAM) |
+| **Speed** | Faster — signals generated directly by logic gates | Slower — extra step to fetch microinstruction from CM every cycle |
+| **Flexibility** | Rigid — changing control logic means redesigning circuits | Flexible — modify microprogram in CM (especially if writable/dynamic) |
+| **Design complexity** | Complex to design for large/complex instruction sets | Simpler, systematic design even for complex instruction sets |
+| **Cost** | Cheaper (no control memory needed) | More expensive (needs Control Memory hardware) |
+| **Debugging** | Harder to debug/modify (logic is physically wired) | Easier to debug/modify (just change microcode) |
+| **Suitability** | Best for RISC (small, simple, fixed instruction sets) | Best for CISC (large, complex instruction sets) |
+| **Instruction set size handling** | Difficult to scale for large instruction sets | Easily handles large, complex instruction sets |
+| **Silicon area** | Less area (no CM needed) | More area (CM adds to chip area) |
+
+### Hardwired Control Unit
+
+**Advantages**
+- Faster operation — control signals generated instantly by combinational logic, no memory access delay
+- No extra hardware for control memory — cheaper and smaller
+- Better suited for pipelining — signal generation is fast and doesn't rely on sequential memory reads
+- Ideal for high-performance, fixed instruction sets (RISC processors)
+
+**Disadvantages**
+- Difficult to design and modify — any change to control logic requires redesigning the circuit (rewiring gates/flip-flops)
+- Not scalable — becomes extremely complex as instruction set grows (more opcodes = exponentially more control logic)
+- Hard to debug — errors in hardwired logic require physical redesign, not just a code fix
+- Inflexible — can't easily add new instructions or fix bugs after fabrication
+
+### Microprogrammed Control Unit
+
+**Advantages**
+- Systematic and organized design — control logic is just data (microcode) in memory, much easier to manage
+- Easy to modify/upgrade — especially with dynamic microprogramming (writable control memory), bugs can be fixed or new instructions added without redesigning hardware
+- Handles complex instruction sets efficiently — ideal for CISC where instructions need many micro-steps
+- Easier to design and debug — essentially "programming" the control unit rather than wiring logic gates
+- Cost-effective for complex control requirements compared to building equivalent hardwired logic
+
+**Disadvantages**
+- Slower — every microinstruction requires a memory read from Control Memory, adding delay compared to direct hardwired signal generation
+- More expensive/larger — requires dedicated Control Memory (ROM/RAM) hardware
+- Harder to pipeline efficiently — instructions take variable numbers of microinstructions, timing becomes unpredictable (see Section 12)
+- Overhead per instruction — even simple instructions must go through the mapping + CM read process
+
+### The One-Line Trade-off to Remember
+
+> **Hardwired control = faster but rigid (good for RISC). Microprogrammed control = flexible and easier to design/modify but slower (good for CISC).**
+
+---
+
 *Notes prepared for VLSI / Computer Architecture interview preparation — based on Morris Mano's Computer System Architecture.*
